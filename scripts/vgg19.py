@@ -7,8 +7,17 @@ from keras.layers import VersionAwareLayers
 from keras.utils import data_utils
 from keras.utils import layer_utils
 
-# isort: off
-from tensorflow.python.util.tf_export import keras_export
+WEIGHTS_PATH = (
+    "https://storage.googleapis.com/tensorflow/keras-applications/"
+    "vgg19/vgg19_weights_tf_dim_ordering_tf_kernels.h5"
+)
+WEIGHTS_PATH_NO_TOP = (
+    "https://storage.googleapis.com/tensorflow/"
+    "keras-applications/vgg19/"
+    "vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5"
+)
+
+layers = VersionAwareLayers()
 
 def VGG19(
     include_top=True,
@@ -19,23 +28,13 @@ def VGG19(
     classes=1000,
     classifier_activation="softmax",
 ):
-    """Instantiates the VGG19 architecture.
+    """
+    # VGG19
     Reference:
-    - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
-        https://arxiv.org/abs/1409.1556) (ICLR 2015)
-    For image classification use cases, see
-    [this page for detailed examples](
-      https://keras.io/api/applications/#usage-examples-for-image-classification-models).
-    For transfer learning use cases, make sure to read the
-    [guide to transfer learning & fine-tuning](
-      https://keras.io/guides/transfer_learning/).
-    The default input size for this model is 224x224.
-    Note: each Keras Application expects a specific kind of input preprocessing.
-    For VGG19, call `tf.keras.applications.vgg19.preprocess_input` on your
-    inputs before passing them to the model.
-    `vgg19.preprocess_input` will convert the input images from RGB to BGR,
-    then will zero-center each color channel with respect to the ImageNet
-    dataset, without scaling.
+    - [Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/abs/1409.1556) (ICLR 2015)
+    - [Examples](https://keras.io/api/applications/#usage-examples-for-image-classification-models).
+    - [Transfer learning & Fine-tuning](https://keras.io/guides/transfer_learning/).
+
     Args:
       include_top: whether to include the 3 fully-connected
         layers at the top of the network.
@@ -107,78 +106,44 @@ def VGG19(
             img_input = layers.Input(tensor=input_tensor, shape=input_shape)
         else:
             img_input = input_tensor
+
     # Block 1
-    x = layers.Conv2D(
-        64, (3, 3), activation="relu", padding="same", name="block1_conv1"
-    )(img_input)
-    x = layers.Conv2D(
-        64, (3, 3), activation="relu", padding="same", name="block1_conv2"
-    )(x)
+    x = layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv1")(img_input)
+    x = layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv2")(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block1_pool")(x)
 
     # Block 2
-    x = layers.Conv2D(
-        128, (3, 3), activation="relu", padding="same", name="block2_conv1"
-    )(x)
-    x = layers.Conv2D(
-        128, (3, 3), activation="relu", padding="same", name="block2_conv2"
-    )(x)
+    x = layers.Conv2D(128, (3, 3), activation="relu", padding="same", name="block2_conv1")(x)
+    x = layers.Conv2D(128, (3, 3), activation="relu", padding="same", name="block2_conv2")(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block2_pool")(x)
 
     # Block 3
-    x = layers.Conv2D(
-        256, (3, 3), activation="relu", padding="same", name="block3_conv1"
-    )(x)
-    x = layers.Conv2D(
-        256, (3, 3), activation="relu", padding="same", name="block3_conv2"
-    )(x)
-    x = layers.Conv2D(
-        256, (3, 3), activation="relu", padding="same", name="block3_conv3"
-    )(x)
-    x = layers.Conv2D(
-        256, (3, 3), activation="relu", padding="same", name="block3_conv4"
-    )(x)
+    x = layers.Conv2D(256, (3, 3), activation="relu", padding="same", name="block3_conv1")(x)
+    x = layers.Conv2D(256, (3, 3), activation="relu", padding="same", name="block3_conv2")(x)
+    x = layers.Conv2D(256, (3, 3), activation="relu", padding="same", name="block3_conv3")(x)
+    x = layers.Conv2D(256, (3, 3), activation="relu", padding="same", name="block3_conv4")(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block3_pool")(x)
 
     # Block 4
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block4_conv1"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block4_conv2"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block4_conv3"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block4_conv4"
-    )(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block4_conv1")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block4_conv2")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block4_conv3")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block4_conv4")(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block4_pool")(x)
 
     # Block 5
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block5_conv1"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block5_conv2"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block5_conv3"
-    )(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation="relu", padding="same", name="block5_conv4"
-    )(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv1")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv2")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv3")(x)
+    x = layers.Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv4")(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block5_pool")(x)
 
     if include_top:
-        # Classification block
         x = layers.Flatten(name="flatten")(x)
         x = layers.Dense(4096, activation="relu", name="fc1")(x)
         x = layers.Dense(4096, activation="relu", name="fc2")(x)
         imagenet_utils.validate_activation(classifier_activation, weights)
-        x = layers.Dense(
-            classes, activation=classifier_activation, name="predictions"
-        )(x)
+        x = layers.Dense(classes, activation=classifier_activation, name="predictions")(x)
     else:
         if pooling == "avg":
             x = layers.GlobalAveragePooling2D()(x)
@@ -215,3 +180,17 @@ def VGG19(
         model.load_weights(weights)
 
     return model
+
+
+if __name__ == "__main__":
+    """
+    The default input size for this model is 224x224.
+    Note: each Keras Application expects a specific kind of input preprocessing.
+    For VGG19, call `tf.keras.applications.vgg19.preprocess_input` on your
+    inputs before passing them to the model.
+    `vgg19.preprocess_input` will convert the input images from RGB to BGR,
+    then will zero-center each color channel with respect to the ImageNet
+    dataset, without scaling.
+    """
+    model = VGG19(weights=None, input_shape=(34, 34, 3), classes=100)
+    model.summary()
