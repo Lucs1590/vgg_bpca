@@ -6,6 +6,7 @@ from keras.engine import training
 from keras.layers import VersionAwareLayers
 from keras.utils import data_utils
 from keras.utils import layer_utils
+from keras.optimizers import Adam
 
 WEIGHTS_PATH = (
     "https://storage.googleapis.com/tensorflow/keras-applications/"
@@ -106,7 +107,6 @@ def VGG19(
             img_input = layers.Input(tensor=input_tensor, shape=input_shape)
         else:
             img_input = input_tensor
-
     # Block 1
     x = layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv1")(img_input)
     x = layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv2")(x)
@@ -139,6 +139,7 @@ def VGG19(
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name="block5_pool")(x)
 
     if include_top:
+        # Classification block
         x = layers.Flatten(name="flatten")(x)
         x = layers.Dense(4096, activation="relu", name="fc1")(x)
         x = layers.Dense(4096, activation="relu", name="fc2")(x)
@@ -194,3 +195,9 @@ if __name__ == "__main__":
     """
     model = VGG19(weights=None, input_shape=(34, 34, 3), classes=100)
     model.summary()
+    adam = Adam(learning_rate=1e-4)
+    model.compile(
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'],
+        optimizer=adam
+    )
