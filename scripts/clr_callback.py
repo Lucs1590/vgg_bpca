@@ -1,11 +1,11 @@
-from tensorflow.keras.callbacks import *
+from tensorflow.keras.callbacks import Callback
 from tensorflow.keras import backend as K
 import numpy as np
 
 
 class CyclicLR(Callback):
 
-    def __init__(self, base_lr=1e-5, max_lr=1e-3, step_size=2000.):
+    def __init__(self, base_lr=1e-5, max_lr=1e-3, step_size=500):
         super(CyclicLR, self).__init__()
 
         self.base_lr = base_lr
