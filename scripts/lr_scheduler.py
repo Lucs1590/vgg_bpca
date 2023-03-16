@@ -1,11 +1,13 @@
 import math
+import numpy as np
 import matplotlib.pyplot as plt
 
 
 def lr_time_based_decay(epoch, lr, nb_epoch=0):
     # decay = lr / nb_epoch
     decay = 0.0045
-    return lr * 1 / (1 + decay * epoch)
+    lr *= 1 / (1 + decay * epoch)
+    return lr
 
 
 def lr_step_decay(epoch, lr, nb_epoch=0):
@@ -40,9 +42,18 @@ def lr_asc_desc_decay(epoch, lr, nb_epoch=0):
     return lr
 
 
-def epoch_fall(epoch, lr, nb_epoch=0):
+def lr_triangular_decay(epoch, lr, nb_epoch=0):
+    ...
+
+def lr_epoch_fall(epoch, lr, nb_epoch=0):
     lr_drop = 20
-    return lr * (0.5 ** (epoch // lr_drop))
+    lr = lr * (0.5 ** (epoch // lr_drop))
+    return lr
+
+
+def lr_exp_decay(epoch, lr, nb_epoch=0):
+    lr = lr * math.exp(-0.001 * epoch)
+    return lr
 
 
 def plot_lr_decay(lr_function, lr, epoch, nb_epoch):
@@ -56,7 +67,7 @@ def plot_lr_decay(lr_function, lr, epoch, nb_epoch):
 if __name__ == "__main__":
     nb_epoch = 500
     returned_lr = plot_lr_decay(
-        epoch_fall,
+        lr_triangular_decay,
         [1e-5],
         0,
         nb_epoch
