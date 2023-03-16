@@ -1,5 +1,4 @@
 import math
-import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -45,6 +44,7 @@ def lr_asc_desc_decay(epoch, lr, nb_epoch=0):
 def lr_triangular_decay(epoch, lr, nb_epoch=0):
     ...
 
+
 def lr_epoch_fall(epoch, lr, nb_epoch=0):
     lr_drop = 20
     lr = lr * (0.5 ** (epoch // lr_drop))
@@ -67,7 +67,7 @@ def plot_lr_decay(lr_function, lr, epoch, nb_epoch):
 if __name__ == "__main__":
     nb_epoch = 500
     returned_lr = plot_lr_decay(
-        lr_triangular_decay,
+        lr_asc_desc_decay,
         [1e-5],
         0,
         nb_epoch
