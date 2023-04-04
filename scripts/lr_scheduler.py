@@ -22,10 +22,10 @@ def lr_step_decay(epoch, lr, nb_epoch=0):
 def lr_asc_desc_decay(epoch, lr, nb_epoch=0):
     lr_max = 1e-3
     lr_min = 1e-5
-    lr_ascending_ep = 20
-    lr_sus_ep = 0
-    decay = 0.85
-    ascending_penalty = 0.85
+    lr_ascending_ep = 100
+    lr_sus_ep = 0 # plato
+    decay = 0.99
+    ascending_penalty = 0.95
 
     if epoch < lr_ascending_ep:
         lr = (lr_max - lr) / lr_ascending_ep * epoch + (lr*ascending_penalty)
