@@ -1,0 +1,135 @@
+# with open('/content/gdrive/MyDrive/Projetos/colab-tests/cifar100_vgg16.json', 'r') as json_file:
+#     loaded_model_json = json_file.read()
+#     vgg16_model = model_from_json(loaded_model_json)
+
+# vgg16_model.load_weights("/content/gdrive/MyDrive/Projetos/colab-tests/cifar100_vgg16_block4.h5")
+vgg16_model_bpca = load_model(
+    "/Volumes/SSD/Mestrado/colab-tests/cifar100_vgg16_bpca_block3.h5",
+    custom_objects={
+        "BPCAPooling": BPCAPooling,
+    }
+)
+vgg16_model_avg = load_model(
+    "/Volumes/SSD/Mestrado/colab-tests/cifar100_vgg16_avg_block3.h5",
+)
+vgg16_model_max = load_model(
+    "/Volumes/SSD/Mestrado/colab-tests/cifar100_vgg16_max_block3.h5",
+)
+
+# vgg16_model.load_weights(
+#     '/content/gdrive/MyDrive/Projetos/colab-tests/cifar100_vgg16_block5.h5',
+#     by_name=True,
+#     skip_mismatch=True
+# )
+
+def visualize_conv_layer(model_name, model, train_base, layer_name, numb):
+  layer_output=model.get_layer(layer_name).output
+  h, w, l = train_base.shape[1:]
+
+  intermediate_model=tf.keras.models.Model(
+      inputs=model.input,
+      outputs=layer_output
+  )
+  intermediate_prediction=intermediate_model.predict(
+      train_base[numb].reshape(1,h,w,l)
+  )
+
+  row_size, col_size = get_plotting_matrix_shape(np.shape(intermediate_prediction)[-1])
+
+  img_index=0
+  print(np.shape(intermediate_prediction))
+
+  fig,ax=plt.subplots(row_size,col_size,figsize=(10,8))
+  for row in range(0,row_size):
+    for col in range(0,col_size):
+      ax[row][col].tick_params(left = False, right = False, labelleft = False, labelbottom = False, bottom = False)
+      ax[row][col].imshow(intermediate_prediction[0, :, :, img_index], cmap='gray')
+      img_index+=1
+
+  plt.savefig(f'/Users/brito/Downloads/artifacts/{model_name}_{layer_name}_{numb}.png', dpi=300, format="png")
+
+  visualize_conv_layer(
+    'avg',
+    vgg16_model_avg.get_layer('vgg16'),
+    X_train,
+    'block1_pool',
+    img_index
+)
+
+visualize_conv_layer(
+    'bpca',
+    vgg16_model_bpca.get_layer('vgg16'),
+    X_train,
+    'block1_pool',
+    img_index
+)
+
+visualize_conv_layer(
+    'max',
+    vgg16_model_max.get_layer('vgg16'),
+    X_train,
+    'block1_pool',
+    img_index
+)
+
+images_to_explain = []
+for i in range(5):
+    j = np.random.randint(0, len(X_test))
+    images_to_explain.append(X_test[j])
+
+preds_bpca = vgg16_model_bpca.predict(X_test)
+preds_avg = vgg16_model_avg.predict(X_test)
+preds_max = vgg16_model_max.predict(X_test)
+
+explainer = lime_image.LimeImageExplainer(random_state=77)
+
+# run lime to 5 random images three times, one for each model
+images_to_explain = []
+for i in range(5):
+    images_to_explain.append(np.random.randint(0, len(X_test)))
+
+fig, ax = plt.subplots(3, 5, figsize=(20, 10))
+for i in range(5):
+    explanation_bpca = explainer.explain_instance(
+        X_test[images_to_explain[i]].astype('double'),
+        vgg16_model_bpca.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+    explanation_avg = explainer.explain_instance(
+        X_test[images_to_explain[i]].astype('double'),
+        vgg16_model_avg.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+    explanation_max = explainer.explain_instance(
+        X_test[images_to_explain[i]].astype('double'),
+        vgg16_model_max.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+
+    temp, mask = explanation_bpca.get_image_and_mask(explanation_bpca.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[0][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[0][i].set_title(
+        f'Original: {classes_dict[str(np.argmax(y_test[images_to_explain[i]]))]} \n Predicted: {classes_dict[str(np.argmax(preds_bpca[images_to_explain[i]]))]}'
+    )
+    ax[0][i].axis('off')
+
+    temp, mask = explanation_avg.get_image_and_mask(explanation_avg.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[1][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[1][i].set_title(
+        f'Original: {classes_dict[str(np.argmax(y_test[images_to_explain[i]]))]} \n Predicted: {classes_dict[str(np.argmax(preds_avg[images_to_explain[i]]))]}'
+    )
+    ax[1][i].axis('off')
+
+    temp, mask = explanation_max.get_image_and_mask(explanation_max.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[2][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[2][i].set_title(
+        f'Original: {classes_dict[str(np.argmax(y_test[images_to_explain[i]]))]} \n Predicted: {classes_dict[str(np.argmax(preds_max[images_to_explain[i]]))]}'
+    )
+    ax[2][i].axis('off')
+plt.savefig('lime_explanations.png')
