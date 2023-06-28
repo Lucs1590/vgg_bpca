@@ -1,0 +1,59 @@
+preds_bpca = vgg16_model_bpca.predict(test_data)
+preds_avg = vgg16_model_avg.predict(test_data)
+preds_max = vgg16_model_max.predict(test_data)
+
+explainer = lime_image.LimeImageExplainer(random_state=77)
+
+# run lime to 5 random images three times, one for each model
+images_to_explain = []
+labels_to_explain = []
+for i in range(5):
+    temp_image, temp_label = next(iter(test_data.skip(i).take(1)))
+    images_to_explain.append(temp_image.numpy()[0])
+    labels_to_explain.append(temp_label.numpy()[0])
+
+fig, ax = plt.subplots(3, 5, figsize=(20, 10))
+for i in range(5):
+    explanation_bpca = explainer.explain_instance(
+        images_to_explain[i].astype('double'),
+        vgg16_model_bpca.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+    explanation_avg = explainer.explain_instance(
+        images_to_explain[i].astype('double'),
+        vgg16_model_avg.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+    explanation_max = explainer.explain_instance(
+        images_to_explain[i].astype('double'),
+        vgg16_model_max.predict,
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+
+    temp, mask = explanation_bpca.get_image_and_mask(explanation_bpca.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[0][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[0][i].set_title(
+        f'Original: {classes_dict[str(labels_to_explain[i])]} \n Predicted: {classes_dict[str(np.argmax(preds_bpca[i]))]}'
+    )
+    ax[0][i].axis('off')
+
+    temp, mask = explanation_avg.get_image_and_mask(explanation_avg.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[1][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[1][i].set_title(
+        f'Original: {classes_dict[str(labels_to_explain[i])]} \n Predicted: {classes_dict[str(np.argmax(preds_avg[i]))]}'
+    )
+    ax[1][i].axis('off')
+
+    temp, mask = explanation_max.get_image_and_mask(explanation_max.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+    ax[2][i].imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    ax[2][i].set_title(
+        f'Original: {classes_dict[str(labels_to_explain[i])]} \n Predicted: {classes_dict[str(np.argmax(preds_max[i]))]}'
+    )
+    ax[2][i].axis('off')
+plt.savefig('lime_explanations.png')
