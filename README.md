@@ -21,6 +21,7 @@ The notebooks contain the code for the experiments (using Food-101 and CIFAR-100
 The `scripts` folder contains the implementation of the proposed method and other methods used in the experiments.
 
 In the `models_weights` folder you could find the weights of the models used in the experiments on `h5` format, so you can load them directly in the notebooks.
+**OBS.: In this repository we are GIT LFS to store the weights files. So you need to install it to download the weights.**
 
 ## Citation
 If you use this code in your research, please cite our paper:
