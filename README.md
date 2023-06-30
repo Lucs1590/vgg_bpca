@@ -37,4 +37,4 @@ If you use this code in your research, please cite our paper:
 ```
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Lucs1590/vgg_bpca/blob/2c97a54297698363aa6349a655371a6eb3bbdb54/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Lucs1590/vgg_bpca/blob/master/LICENSE.md) file for details.
