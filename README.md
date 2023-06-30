@@ -4,7 +4,7 @@ Our goal is to provide a simple and easy to use implementation of the proposed m
 
 The proposed method is called BPCAPooling, that is inspired by the conventional PCA method but specifically designed for pooling in CNNs. It subdivides the input feature map into blocks and applies PCA to each block to extract important information while preserving spatial information. The transformed blocks are then concatenated to form a reduced-size feature map. This is ilustrated in the figure below.
 
-![BPCAPooling](https://github.com/Lucs1590/vgg_bpca/blob/2c97a54297698363aa6349a655371a6eb3bbdb54/images/bpca.png)
+![BPCAPooling](https://raw.githubusercontent.com/Lucs1590/vgg_bpca/2c97a54297698363aa6349a655371a6eb3bbdb54/images/bpca.png?token=GHSAT0AAAAAAB5UG3TH7YCPUFGK7NJR3IL6ZE7LHZA)
 
 ## Installation
 The code was tested with Python 3.6.9 and Tensorflow 2.12.0.
@@ -37,4 +37,4 @@ If you use this code in your research, please cite our paper:
 ```
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://raw.githubusercontent.com/Lucs1590/vgg_bpca/master/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Lucs1590/vgg_bpca/blob/2c97a54297698363aa6349a655371a6eb3bbdb54/LICENSE) file for details.
