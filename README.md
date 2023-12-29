@@ -1,5 +1,5 @@
 # Exploring BPCAPooling Layer in VGG-16 Network: A Comparative Study with Conventional Pooling Methods
-This repository was created for the paper (link to paper) and contains the code for the experiments.
+This repository was created for the paper submitted to SIBGRAPI and contains the code for the experiments.
 Our goal is to provide a simple and easy to use implementation of the proposed method.
 
 The proposed method is called BPCAPooling, that is inspired by the conventional PCA method but specifically designed for pooling in CNNs. It subdivides the input feature map into blocks and applies PCA to each block to extract important information while preserving spatial information. The transformed blocks are then concatenated to form a reduced-size feature map. This is ilustrated in the figure below.
