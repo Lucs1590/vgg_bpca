@@ -1,4 +1,5 @@
 # Exploring BPCAPooling Layer in VGG-16 Network: A Comparative Study with Conventional Pooling Methods
+
 This repository was created for the paper (link to paper) and contains the code for the experiments.
 Our goal is to provide a simple and easy to use implementation of the proposed method.
 
@@ -7,13 +8,16 @@ The proposed method is called BPCAPooling, that is inspired by the conventional 
 ![BPCAPooling](https://raw.githubusercontent.com/Lucs1590/vgg_bpca/2c97a54297698363aa6349a655371a6eb3bbdb54/images/bpca.png?token=GHSAT0AAAAAAB5UG3TH7YCPUFGK7NJR3IL6ZE7LHZA)
 
 ## Installation
+
 The code was tested with Python 3.6.9 and Tensorflow 2.12.0.
 To install the required packages run:
-```
+
+```bash
 pip install -r requirements.txt
 ```
 
 ## Usage
+
 The code is structured based on the Jupiter notebooks in the `notebooks` folder. So the main files are the notebooks.
 
 The notebooks contain the code for the experiments (using Food-101 and CIFAR-100) and can be run directly.
@@ -24,8 +28,10 @@ In the `models_weights` folder you could find the weights of the models used in 
 **OBS.: In this repository we are GIT LFS to store the weights files. So you need to install it to download the weights.**
 
 ## Citation
+
 If you use this code in your research, please cite our paper:
-```
+
+```bibtex
 @inproceedings{,
   title={Exploring BPCAPooling Layer in VGG-16 Network: A Comparative Study with Conventional Pooling Methods},
   author={Lucas de Brito Silva, Alvaro Leandro Cavalcante Carneiro, Uemerson Pinheiro Junior, Denis Henrique Pinheiro Salvadeo, Davi Duarte de Paula},
@@ -37,4 +43,5 @@ If you use this code in your research, please cite our paper:
 ```
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Lucs1590/vgg_bpca/blob/master/LICENSE.md) file for details.
+
+This project is licensed under the Apache 2.0 - see the [LICENSE](https://github.com/Lucs1590/vgg_bpca/blob/master/LICENSE.md) file for details.
